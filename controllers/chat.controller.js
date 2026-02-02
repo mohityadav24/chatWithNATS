@@ -7,6 +7,8 @@ export const sendMessage = async (req, res) => {
   try {
     const { chatId, content, type } = req.body;
 
+
+    console.log("chatId",chatId)
     const message = await Message.create({
       chatId,
       sender: req.user._id,
@@ -14,7 +16,7 @@ export const sendMessage = async (req, res) => {
       type
     });
 
-    // Update last message in chat
+ 
     await Chat.findByIdAndUpdate(chatId, { lastMessage: message._id });
 
     // Publish to NATS
@@ -23,6 +25,6 @@ export const sendMessage = async (req, res) => {
     res.status(201).json({ message });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "Server Error", err});
   }
 };
